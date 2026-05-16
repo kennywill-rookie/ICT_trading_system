@@ -11,6 +11,11 @@ Before any collaborative work or file modification, you MUST read and follow:
 - `AGENT_COLLABORATION_FRAMEWORK.md` — overall framework
 - `agent_handoff/PHASE1.md` — currently active phase agreement (started 2026-05-15)
 
+## 📚 Single-source-of-truth docs (must consult before changing signals or decision logic)
+
+- **`SIGNAL_TAXONOMY.md`** — all signal definitions, states (implemented / partial / planned / deprecated), asset matrix, filter gates, ML scope. Replaces scattered references in `Trading_system_flow.md` / `dashboard.py` checklist / inline comments.
+- **`DECISION_LAYER_SPEC.md`** — proposed unified decision layer (rule + ML + checklist + regime). `planned` state; coding deferred until Codex review + backtest.
+
 **Hard rules** (non-negotiable in Phase-1):
 
 1. Before modifying any file, check whether it falls under `PHASE1.md` § Hard Escalation Items (e.g., `credentials.env`, `ml_live_monitor.py`, `scheduler.py`, `run_scan.*`, `deploy_kenny.sh`, model artifacts, `trade_log.json`, `signal_log.json`, OKX/live order code, kennyserver deployment). If yes, you MUST write a Task document under `agent_handoff/tasks/` and request Kenny's verdict before proceeding.
@@ -143,11 +148,13 @@ TELEGRAM_CHAT_ID="your_chat_id"
 
 | 자산 | 진입 조건 | 포지션 크기 |
 |---|---|---|
-| 암호화폐 선물 | FVG + Order Block + 15분 Entry | 소액, Seed 4.5% 고정손실 |
+| 암호화폐 선물 | FVG + Order Block(planned) + 15분 Entry | 소액, Seed 4.5% 고정손실 |
 | 암호화폐 현물 | Structure Shift 확인 후 분할매수 | 목돈 |
 | ETF | 120일선 지지, 추세추종 | 중기 |
-| 개별주식 | Fundamental 견고 + 뉴스 하락 | 분할매수 |
+| 개별주식 | Price Dip + 사용자 fundamental/news 검증 | 분할매수 |
 | 채권 | Structure Shift 발생 시에만 | 소량 |
+
+> 자산별 시그널·상태·필터는 `SIGNAL_TAXONOMY.md`의 매트릭스가 single source-of-truth.
 
 ### 핵심 판단 기준
 
@@ -217,6 +224,12 @@ TELEGRAM_CHAT_ID="your_chat_id"
 
 현재 `ml_live_monitor.py`와 `ml_fvg_model.pkl`은 전체 Structural Edge 시스템이 아니라 **4H FVG 이벤트만을 대상으로 한 ML paper trading 실험**이다.
 따라서 FVG ML 성과를 Structure Shift, Liquidity Sweep, RSI Divergence, 120일선 지지 등 전체 rule-based signal layer의 성과로 일반화하면 안 된다.
+
+2026-05-16 update — Codex review 후 적용된 변경:
+- `ml_monitor_config.json`에 `asset_modes` 도입. BTC-USDT = `paper_only` (Telegram 차단, 가상매매·로그는 유지). ETH/SOL = `normal`.
+- `backtest_15m.py`는 `deprecated` (`SIGNAL_TAXONOMY.md` §6 참조; total_R −233R / PF 0.59).
+- Decision Layer 명세 v0.1 작성 (`DECISION_LAYER_SPEC.md`) — 코드화는 backtest + Codex review + Kenny verdict 후.
+- 결정 배경: `agent_handoff/discussion/2026-05-16_codex_review_claude_patch_plan.md` + `agent_handoff/tasks/2026-05-16_integrated_signal_decision_overhaul.md`.
 
 2026-05-11 기준 FVG live 분석의 핵심 해석은 다음과 같다.
 
