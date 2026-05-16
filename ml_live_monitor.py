@@ -501,8 +501,15 @@ def main():
     assets = config["assets"]
     threshold_30 = config["threshold_top30"]
     threshold_20 = config["threshold_top20"]
+    # Per-asset mode (added 2026-05-16 per Codex review):
+    #   normal     = scan + Telegram + paper-track  (default for any asset not listed)
+    #   paper_only = scan + paper-track, NO Telegram
+    #   disabled   = skip the asset entirely
+    asset_modes = {k: v for k, v in config.get("asset_modes", {}).items()
+                   if not k.startswith("_")}
 
     print(f"  Assets: {', '.join(assets)}")
+    print(f"  Modes: {asset_modes if asset_modes else '(all normal)'}")
     print(f"  Threshold top30%: {threshold_30:.4f}")
     print(f"  Threshold top20%: {threshold_20:.4f}")
     print(f"  Telegram: {'ON' if telegram.enabled else 'OFF'}")
@@ -557,9 +564,15 @@ def main():
                 print(f" 🔍 4H scan...", end="")
 
                 for asset in assets:
+                    mode = asset_modes.get(asset, "normal")
+                    if mode == "disabled":
+                        print(f"\n    ⏭️  {asset} disabled, skip")
+                        continue
                     try:
                         new_events = scan_asset(asset, model, config, state)
                         for event in new_events:
+                            # event 레코드에 mode 보존 (사후 분리 분석용)
+                            event["asset_mode"] = mode
                             # 모든 이벤트 로그 기록 (100%)
                             log.append({"type": "event", **event})
 
@@ -572,15 +585,18 @@ def main():
 
                             # 신호 발송 (threshold 이상만)
                             if event["is_signal"]:
-                                telegram.send_signal(
-                                    event, event["proba"],
-                                    event["percentile"],
-                                    threshold_30, threshold_20,
-                                )
+                                # paper_only면 Telegram 차단, 가상매매·로그는 유지
+                                if mode == "normal":
+                                    telegram.send_signal(
+                                        event, event["proba"],
+                                        event["percentile"],
+                                        threshold_30, threshold_20,
+                                    )
 
-                                # 가상 포지션 오픈
+                                # 가상 포지션 오픈 (mode 무관, paper-track 항상)
                                 position = {
                                     "asset": event["asset"],
+                                    "asset_mode": mode,
                                     "direction": event["direction"],
                                     "entry_price": event["entry_price"],
                                     "sl_price": event["sl_price"],
@@ -595,12 +611,14 @@ def main():
                                 }
                                 state["open_positions"].append(position)
 
-                                print(f"\n    📱 {asset} {event['direction']} "
+                                tag = "📱" if mode == "normal" else "📒 paper"
+                                print(f"\n    {tag} {asset} {event['direction']} "
                                       f"p={event['proba']:.1%} ({event['percentile']})")
                             else:
                                 # Threshold 미달도 가상 포지션으로 추적 (사후 분석용)
                                 position = {
                                     "asset": event["asset"],
+                                    "asset_mode": mode,
                                     "direction": event["direction"],
                                     "entry_price": event["entry_price"],
                                     "sl_price": event["sl_price"],

@@ -24,6 +24,12 @@
     "ETH-USDT",
     "SOL-USDT"
   ],
+  "asset_modes": {
+    "_doc": "per-asset behavior. normal=Telegram+paper-track; paper_only=track but no Telegram; disabled=skip entirely. Set 2026-05-16 per Codex review (BTC isolated until P0 verify + maintain criteria met).",
+    "BTC-USDT": "paper_only",
+    "ETH-USDT": "normal",
+    "SOL-USDT": "normal"
+  },
   "model_file": "ml_fvg_model.pkl",
   "trained_at": "2026-03-18 00:00:03.777454",
   "train_samples": 593,
