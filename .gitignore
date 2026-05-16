@@ -1,0 +1,60 @@
+# ─── Secrets ───
+credentials.env
+*.env
+!ml_monitor_config.json
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# ─── Models / Datasets (too large for git, hosted separately) ───
+*.pkl
+*.joblib
+ml_fvg_dataset.csv
+
+# ─── Runtime state / cumulative logs (Hard Escalation per PHASE1.md) ───
+# Tracked separately or via release artifacts, not source control.
+trade_log.json
+signal_log.json
+ml_monitor_state.json
+ml_monitor_log.json
+logs/
+logs_kenny/
+
+# ─── Diagnostics / one-off outputs ───
+tools/results_*.json
+backtest_result.json
+backtest_15m_result.json
+trade_chart.html
+
+# ─── Editor / OS ───
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ─── Screenshots / temp ───
+screenshot/
+*.png
+*.jpg
+!docs/**/*.png
+!docs/**/*.jpg
+
+# ─── Internal-only / non-public discussion ───
+CODEX_DISCUSSION_LOG_IGNORE_FOR_CLAUDE.md
+machine_learning_기반_트레이딩시스템셋업과정_대화기록.MD
+feedback/
+.claude/
+
+# ─── Local research notes (Korean) ───
+⏺*
+
