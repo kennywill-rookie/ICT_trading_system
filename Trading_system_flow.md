@@ -190,4 +190,4 @@
 | FVG Entry | 65 | 전체 | HTF 방향 일치 필수 |
 | RSI Divergence | 55 | 전체 | 최근 1개만 |
 | 120일선 지지 | 68 | ETF 전용 | MA120 ±3% 범위 |
-| Fundamental Dip | 60 | 주식 전용 | 20일 고점 -10% 이상 |
+| Price Dip | 60 | 주식 전용 | 20일 고점 -10% 이상 (순수 가격 트리거; 사용자 fundamental 검증 필요) |

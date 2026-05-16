@@ -149,7 +149,7 @@ class SignalType(Enum):
     FVG_ENTRY = "FVG Entry"
     RSI_DIVERGENCE = "RSI Divergence"
     MA120_SUPPORT = "120일선 지지"
-    FUNDAMENTAL_DIP = "Fundamental Dip"
+    PRICE_DIP = "Price Dip"
 
 class Direction(Enum):
     LONG = "Long"
@@ -706,7 +706,8 @@ class SignalEngine:
                     ))
                     print(f"  🔔 120일선 지지: Long @ {close:.2f}")
 
-        # ─── 5. Fundamental Dip (개별주식) ───
+        # ─── 5. Price Dip (개별주식) ───
+        # NOTE: 순수 가격 트리거. fundamental/news 필터는 미구현 — 사람이 수동 검증.
         if asset_type == "stock":
             close = df_signal["close"].iloc[-1]
             recent_high = df_signal["high"].tail(20).max()
@@ -716,7 +717,7 @@ class SignalEngine:
                 signals.append(Signal(
                     timestamp=datetime.now().isoformat(),
                     asset=symbol, asset_type=asset_type,
-                    signal_type=SignalType.FUNDAMENTAL_DIP.value,
+                    signal_type=SignalType.PRICE_DIP.value,
                     direction=Direction.LONG.value,
                     timeframe=signal_tf,
                     confidence=60,
@@ -724,11 +725,11 @@ class SignalEngine:
                     stop_loss=round(close * 0.93, 2),
                     take_profit=round(recent_high * 0.95, 2),
                     rr_ratio=round(abs(recent_high * 0.95 - close) / abs(close * 0.07), 1),
-                    reason=f"20일 고점 대비 {drop_pct:.1f}% 하락 (Fundamental check 필요)",
+                    reason=f"20일 고점 대비 {drop_pct:.1f}% 하락 (수동 fundamental/news 검증 필요)",
                     checklist_passed=0,
                     htf_bias=htf_bias
                 ))
-                print(f"  🔔 Fundamental Dip: {symbol} {drop_pct:.1f}% 하락")
+                print(f"  🔔 Price Dip: {symbol} {drop_pct:.1f}% 하락")
 
         return signals
 
