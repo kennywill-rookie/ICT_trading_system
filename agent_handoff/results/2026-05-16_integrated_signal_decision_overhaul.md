@@ -193,5 +193,29 @@ for e in recent:
 - `2026-05-XX_liquidity_sweep_prototype.md` — SIGNAL_TAXONOMY §7
 - `2026-05-XX_phase1_git_policy.md` — Phase-1 amendment: git 도입 정식 명문화
 
+## Deploy log (2026-05-16 ~10:35 UTC)
+
+배포 직후 PM2 + startup log 검증:
+
+```text
+PM2: ml-monitor online (id=4, pid=235963, mem=80.8mb)
+Startup log:
+  Assets: BTC-USDT, ETH-USDT, SOL-USDT
+  Modes: {'BTC-USDT': 'paper_only', 'ETH-USDT': 'normal', 'SOL-USDT': 'normal'}
+  Threshold top30%: 0.6454
+  Telegram: ON
+  State: 1 open, 160 seen
+  Log: 319 entries
+  루프 시작 (15분 간격)...
+```
+
+상태 파일 보존 확인 (open positions·seen_events·log entries 모두 유지).
+재시작 직전 거래 정상 청산: ETH-USDT WIN R=1.39 (TP), SOL-USDT WIN R=1.44 (TP).
+
+**남은 검증** (별도 follow-up, 시간 경과 필요):
+- 다음 4H 경계 (UTC 12:00, 16:00, 20:00...) 후 `higher_tf_trend != 0.5` 확인
+- 7일 후 BTC paper_only 이벤트 누적 수 + 신규 event에 `asset_mode` 필드 보존 확인
+
 ## Verdict
 Pending Kenny's review (`agent_handoff/verdicts/2026-05-16_integrated_signal_decision_overhaul.md`).
+Deploy itself is `ACCEPT`-authorized in-session (Kenny answered AskUserQuestion).
