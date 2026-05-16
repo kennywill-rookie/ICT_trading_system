@@ -1,13 +1,32 @@
 """
-⚡ Structural Edge - Forward Walking Backtest (15min)
-=====================================================
+⚡ Structural Edge - Forward Walking Backtest (15min)  [DEPRECATED 2026-05-16]
+=============================================================================
+
+╔══════════════════════════════════════════════════════════════════════════╗
+║  STATUS: DEPRECATED — rule-based 15m strategy is shelved (do NOT trade) ║
+║                                                                          ║
+║  Why:                                                                    ║
+║   backtest_15m_result.json (BTC-USD, 693 trades):                        ║
+║     total_R = -233.37R   PF = 0.59   WR = 41.8%                          ║
+║     All setups (FVG / RSI Div / Structure Shift) negative.               ║
+║     Fees alone (~₩129K) exceed any setup edge.                           ║
+║                                                                          ║
+║  Decision (Codex review 2026-05-16 + integrated overhaul task):          ║
+║   - Stop running this script as a live or paper trading source.          ║
+║   - Keep code + dataset for FUTURE ML feature learning only              ║
+║     (event/feature/label table per CLAUDE.md ML philosophy §).           ║
+║   - Re-enable only if exit logic is replaced by ML-derived stops         ║
+║     (COUNTER_FVG exit avgR = +1.35R hints exit logic is the issue).      ║
+║                                                                          ║
+║  Reference:                                                              ║
+║   agent_handoff/tasks/2026-05-16_integrated_signal_decision_overhaul.md  ║
+║   SIGNAL_TAXONOMY.md (state: deprecated)                                 ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
 BTC-USDT 15분봉 기반, bar-by-bar forward walk.
 HTF = 4H (15분봉에서 리샘플링), OKX REST API 데이터.
 
-일봉 백테스트(backtest.py)에서 발견된 인사이트가
-짧은 타임프레임에서도 유효한지 검증.
-
-사용법:
+사용법 (research only):
   python3 backtest_15m.py
 """
 
