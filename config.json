@@ -1,0 +1,61 @@
+{
+  "seed_capital": 1000000,
+  "max_risk_per_trade_pct": 4.5,
+  "min_rr_ratio": 2.0,
+  "watchlist": {
+    "crypto": ["BTC-USD", "ETH-USD"],
+    "etf": ["TQQQ", "SOXL", "QQQ", "SPY", "TLT"],
+    "stocks": ["NVDA", "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"],
+    "bonds": ["IEF", "SHY"]
+  },
+
+  "crypto_okx_symbols": ["BTC/USDT", "ETH/USDT"],
+
+  "timeframes": {
+    "htf": "1wk",
+    "daily": "1d",
+    "h4": "1h",
+    "entry": "15m"
+  },
+
+  "indicators": {
+    "rsi_period": 14,
+    "rsi_overbought": 80,
+    "rsi_oversold": 20,
+    "ma_120": 120,
+    "ma_60": 60,
+    "bollinger_period": 20,
+    "bollinger_std": 2
+  },
+
+  "filters": {
+    "skip_htf_neutral": true,
+    "block_counter_htf": true,
+    "fvg_min_gap_pct": 0.002,
+    "disable_rsi_divergence_short": true
+  },
+
+  "telegram": {
+    "enabled": true
+  },
+
+  "execution": {
+    "slippage_pct": 0.05,
+    "fee_pct": 0.1,
+    "entry_delay_bars": 1,
+    "fvg_only": false,
+    "use_trailing_exit": true,
+    "tp1_partial_pct": 0.5
+  },
+
+  "trade_log_file": "trade_log.json",
+  "signal_log_file": "signal_log.json",
+
+  "_comment_자산별_규칙": {
+    "crypto_futures": "소액, 15분 Entry, Seed 4.5% 고정손실, FVG+Order Block",
+    "crypto_spot": "목돈, Structure Shift 확인 후 분할매수",
+    "etf": "중기, 120일선 기반, 추세추종",
+    "stock": "Fundamental 견고 + 뉴스 하락시 진입",
+    "bond": "Structure Shift 발생시에만"
+  }
+}
